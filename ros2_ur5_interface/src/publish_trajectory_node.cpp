@@ -174,14 +174,28 @@ private:
 
 
          RCLCPP_INFO(this->get_logger(), "angle_config size: %zu", angle_config.size());
+
+        
+        rclcpp::spin_some(this->get_node_base_interface()); // Spin to process any incoming messages
+
+        if (!angle_config.empty()) {
+            RCLCPP_INFO(this->get_logger(), "angle_config size: %zu", angle_config.size());
+
+            // Trajectory generation once the angle_config is populated
+            trajectory_msgs::msg::JointTrajectory traj1;
+            traj1 = generate_trajectory_segment(start_config_, angle_config, 10);
+            trajectories_.push_back(traj1);
+        } else {
+            RCLCPP_WARN(this->get_logger(), "Joint angles not received yet");
+        }
         
         //Trajectory 1
-        trajectory_msgs::msg::JointTrajectory traj1;
+        /*trajectory_msgs::msg::JointTrajectory traj1;
         traj1 = generate_trajectory_segment(
             start_config_,
             angle_config,
             10);
-        trajectories_.push_back(traj1);
+        trajectories_.push_back(traj1);*/
 
 
 
