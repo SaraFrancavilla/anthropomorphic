@@ -154,7 +154,7 @@ private:
         std::vector<double> angle_config;
         
         auto joint_angles_subscription = this->create_subscription<sensor_msgs::msg::JointState>(
-            "joint_angles", 10, [this, angle_config](const sensor_msgs::msg::JointState::SharedPtr msg) {
+            "joint_angles", 10, [this, &angle_config](const sensor_msgs::msg::JointState::SharedPtr msg) {
                 RCLCPP_INFO(this->get_logger(), "Received joint angles");
                 // Save the received joint angles in a variable
                 if (msg->position.size() == joint_names_.size()) {
