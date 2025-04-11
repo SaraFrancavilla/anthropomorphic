@@ -16,6 +16,12 @@ find_package(control_msgs REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(geometry_msgs REQUIRED)  # Aggiungi questa linea per il messaggio geometry_msgs
+# Trova la libreria Eigen3
+find_package(Eigen3 REQUIRED)
+
+# Aggiungi le dipendenze alla compilazione
+include_directories(${EIGEN3_INCLUDE_DIR})
+
 
 # Aggiungi l'eseguibile per il nodo inverse_kin_exec
 add_executable(inverse_kin_exec src/inverse_kin.cpp)
