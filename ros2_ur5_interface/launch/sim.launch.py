@@ -459,7 +459,7 @@ def generate_launch_description():
 
     
     inv_Kin =  Node(
-            package='your_package_name',
+            package='ros2_ur5_interface',
             executable='inverse_kin_exec',
             name='inverse_kin',
             output='screen',
