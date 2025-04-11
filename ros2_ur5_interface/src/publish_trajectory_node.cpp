@@ -150,6 +150,9 @@ private:
         //In the generate_trajectory_segment read and write position from topic joint_angles
 
         // Subscribe to the topic joint_angles
+
+        std::vector<double> angle_config;
+        
         auto joint_angles_subscription = this->create_subscription<sensor_msgs::msg::JointState>(
             "joint_angles", 10, [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
                 RCLCPP_INFO(this->get_logger(), "Received joint angles");
