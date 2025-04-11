@@ -15,8 +15,10 @@ find_package(sensor_msgs REQUIRED)
 find_package(control_msgs REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(geometry_msgs REQUIRED)  # Aggiungi questa linea per il messaggio geometry_msgs
 
-
+# Aggiungi l'eseguibile per il nodo inverse_kin_exec
+add_executable(inverse_kin_exec src/inverse_kin.cpp)
 add_executable(publish_trajectory_node src/publish_trajectory_node.cpp)
 add_executable(gripper_service src/gripper_service.cpp)
 
@@ -39,9 +41,15 @@ ament_target_dependencies(gripper_service
   std_srvs
 )
 
+ament_target_dependencies(inverse_kin_exec  # Aggiungi le dipendenze per inverse_kin_exec
+  rclcpp
+  geometry_msgs  # Aggiungi le dipendenze che hai utilizzato nel file inverse_kin.cpp
+)
+
 install(TARGETS
   publish_trajectory_node
   gripper_service
+  inverse_kin_exec  # Aggiungi inverse_kin_exec per l'installazione
   DESTINATION lib/${PROJECT_NAME}
 )
 
