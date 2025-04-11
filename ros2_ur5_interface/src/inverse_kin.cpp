@@ -8,42 +8,51 @@
 #include <cmath>
 #include <iomanip>
 
-
 #include "ur5_globals.hpp"
 
-//creating a server that passes the final positions to the inverse kin
-Inverse_kin::Inverse_kin(): Node("inverse_kin")
+// Classe del nodo
+class Inverse_kin : public rclcpp::Node
 {
-    // Create a subscription to the end effector position topic
-    subscription_ = this->create_subscription<geometry_msgs::msg::Pose>(
-        "end_effector_position", 10, std::bind(&Inverse_kin::end_effector_callback, this, std::placeholders::_1));
+public:
+    Inverse_kin() : Node("inverse_kin")
+    {
+        // Creazione di una subscription per ricevere la posizione dell'end effector
+        subscription_ = this->create_subscription<geometry_msgs::msg::Pose>(
+            "end_effector_position", 10, std::bind(&Inverse_kin::end_effector_callback, this, std::placeholders::_1));
 
-    // Create a publisher for the joint angles
-    joint_angles_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("joint_angles", 10);
-}
+        // Creazione di un publisher per inviare gli angoli delle giunture
+        joint_angles_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("joint_angles", 10);
+    }
 
+private:
+    void end_effector_callback(const geometry_msgs::msg::Pose::SharedPtr msg)
+    {
+        // Log della posizione dell'end effector ricevuta
+        RCLCPP_INFO(this->get_logger(), "Received end effector position: x=%.2f, y=%.2f, z=%.2f",
+                    msg->position.x, msg->position.y, msg->position.z);
 
-void Inverse_kin::end_effector_callback(const geometry_msgs::msg::Pose::SharedPtr msg)
+        // Definire un set di angoli di giuntura predefiniti
+        std_msgs::msg::Float64MultiArray joint_angles_msg;
+        joint_angles_msg.data = {-1.41, -0.96, -1.8, -1.96, -1.60, 0.0}; // Angoli esempio
+
+        // Pubblicare gli angoli delle giunture
+        joint_angles_publisher_->publish(joint_angles_msg);
+
+        RCLCPP_INFO(this->get_logger(), "Published predefined joint angles.");
+    }
+
+    rclcpp::Subscription<geometry_msgs::msg::Pose>::SharedPtr subscription_;
+    rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr joint_angles_publisher_;
+};
+
+// Funzione main per eseguire il nodo
+int main(int argc, char * argv[])
 {
-    // Log the received end effector position
-    RCLCPP_INFO(this->get_logger(), "Received end effector position: x=%.2f, y=%.2f, z=%.2f",
-                msg->position.x, msg->position.y, msg->position.z);
+    rclcpp::init(argc, argv); // Inizializzare rclcpp
 
-    // Define a set of predefined joint angles
-    std_msgs::msg::Float64MultiArray joint_angles_msg;
-    joint_angles_msg.data = {-1.41, -0.96, -1.8, -1.96, -1.60, 0.0}; // Example angles
+    // Creazione di un'istanza del nodo
+    rclcpp::spin(std::make_shared<Inverse_kin>()); // Esegui il nodo
 
-    // Publish the joint angles
-    joint_angles_publisher_->publish(joint_angles_msg);
-
-    RCLCPP_INFO(this->get_logger(), "Published predefined joint angles.");
+    rclcpp::shutdown(); // Terminare rclcpp
+    return 0;
 }
-
-
-//convert quaternion into rotation matrix
-
-//compute joint angles from rotation matrix
-
-//check for unreachable positions
-
-//send closes joint state
