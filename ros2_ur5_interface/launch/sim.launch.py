@@ -457,6 +457,16 @@ def generate_launch_description():
         ),
     )
 
+    
+    inv_Kin =  Node(
+            package='your_package_name',
+            executable='inverse_kin_exec',
+            name='inverse_kin',
+            output='screen',
+            parameters=[],
+            remappings=[('/end_effector_position', '/new_end_effector_position')] 
+    )
+
     # Return the LaunchDescription
     return LaunchDescription([
         *declared_arguments,
@@ -477,4 +487,5 @@ def generate_launch_description():
         gazebo_ros_bridge,
         gazebo_ros_image_bridge,
         rviz2,
+        inv_Kin,
     ])
