@@ -172,6 +172,9 @@ private:
         end_effector_position_publisher->publish(random_position_msg);
         RCLCPP_INFO(this->get_logger(), "Published random end effector position");
 
+
+         RCLCPP_INFO(this->get_logger(), "angle_config size: %zu", angle_config.size());
+        
         //Trajectory 1
         trajectory_msgs::msg::JointTrajectory traj1;
         traj1 = generate_trajectory_segment(
