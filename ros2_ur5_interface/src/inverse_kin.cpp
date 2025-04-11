@@ -19,9 +19,13 @@ public:
         // Creazione di una subscription per ricevere la posizione dell'end effector
         subscription_ = this->create_subscription<geometry_msgs::msg::Pose>(
             "end_effector_position", 10, std::bind(&Inverse_kin::end_effector_callback, this, std::placeholders::_1));
+        RCLCPP_INFO(this->get_logger(), "Inverse kinematics node subscribing to end_effector_position topic.");
+
 
         // Creazione di un publisher per inviare gli angoli delle giunture
         joint_angles_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("joint_angles", 10);
+        RCLCPP_INFO(this->get_logger(), "Inverse kinematics node publishing to joint_angles topic.");
+    
     }
 
 private:
